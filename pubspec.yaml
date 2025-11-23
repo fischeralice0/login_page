@@ -20,9 +20,18 @@ dev_dependencies:
 
 flutter:
   fonts:
-    - family: Rubik
+    - family: RubikB
       fonts:
         - asset: fonts/Rubik-Bold.ttf
+    - family: RubikR
+      fonts:
         - asset: fonts/Rubik-Regular.ttf
+    - family: RubikSB
+      fonts:
         - asset: fonts/Rubik-SemiBold.ttf
+  assets:
+    - images/apple.png
+    - images/facebook.png
+    - images/google.png
+    - images/logo.png
   uses-material-design: true
