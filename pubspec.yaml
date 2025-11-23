@@ -1,0 +1,28 @@
+name: login_page
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  cupertino_icons: ^1.0.8
+  flutter:
+    sdk: flutter
+  static_analyze_av: ^0.4.1
+
+dev_dependencies:
+  flutter_lints: ^5.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  fonts:
+    - family: Rubik
+      fonts:
+        - asset: fonts/Rubik-Bold.ttf
+        - asset: fonts/Rubik-Regular.ttf
+        - asset: fonts/Rubik-SemiBold.ttf
+  uses-material-design: true
