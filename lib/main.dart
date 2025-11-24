@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'mail_label.dart';
 
 void main() async {
   runApp(const MyApp());
@@ -82,7 +83,9 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     const SizedBox(height: 20),
                     LayoutBuilder(
                       builder: (context, constraints) {
-                        final double buttonWidth = (constraints.maxWidth - 69) / 2;
+                        final double w;
+                        if (constraints.maxWidth>600){w=600;}else{w=constraints.maxWidth;}
+                        final double buttonWidth = (w - 69) / 2;
                         return Container(
                           padding: const EdgeInsets.only(left: 3, top:3, bottom:3, right:3),
                           margin: const EdgeInsets.symmetric(horizontal: 30),
@@ -90,72 +93,174 @@ class _MyLoginPageState extends State<MyLoginPage> {
                             color: const Color(0xfff0eff2),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    signInOrSignUp = false;
-                                  });
-                                },
-                                child: SizedBox(
-                                  width: buttonWidth,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(vertical: 20),
-                                    decoration: BoxDecoration(
-                                      color: signInOrSignUp ? const Color(0xfff0eff2): const Color(0xffffffff),
-                                      borderRadius: BorderRadius.circular(17),
-                                    ),
-                                    child: const Center(
-                                      child: Text(
-                                        'Sign In',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: Color(0xff000000),
-                                          fontFamily: 'RubikR'
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(
+                              maxWidth: 534,
+                            ),
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      signInOrSignUp = false;
+                                    });
+                                  },
+                                  child: SizedBox(
+                                    width: buttonWidth,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 20),
+                                      decoration: BoxDecoration(
+                                        color: signInOrSignUp ? const Color(0xfff0eff2): const Color(0xffffffff),
+                                        borderRadius: BorderRadius.circular(17),
+                                      ),
+                                      child: const Center(
+                                        child: Text(
+                                          'Sign In',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Color(0xff000000),
+                                            fontFamily: 'RubikR'
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  )
+                                    )
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width:3),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    signInOrSignUp = true;
-                                  });
-                                },
-                                child: SizedBox(
-                                  width: buttonWidth,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(vertical: 20),
-                                    decoration: BoxDecoration(
-                                      color: signInOrSignUp ? const Color(0xffffffff): const Color(0xfff0eff2),
-                                      borderRadius: BorderRadius.circular(17),
-                                    ),
-                                    child: const Center(
-                                      child: Text(
-                                        'Sign Up',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: Color(0xff000000),
-                                          fontFamily: 'RubikR'
+                                const SizedBox(width:3),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      signInOrSignUp = true;
+                                    });
+                                  },
+                                  child: SizedBox(
+                                    width: buttonWidth,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 20),
+                                      decoration: BoxDecoration(
+                                        color: signInOrSignUp ? const Color(0xffffffff): const Color(0xfff0eff2),
+                                        borderRadius: BorderRadius.circular(17),
+                                      ),
+                                      child: const Center(
+                                        child: Text(
+                                          'Sign Up',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Color(0xff000000),
+                                            fontFamily: 'RubikR'
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
+                              ]
+                            )
+                          )
+                        );
+                      }
+                    ),
+                    const SizedBox(height: 20),
+                    LayoutBuilder(
+                        builder: (context, constraints) {
+                          final double buttonWidth;
+                          if (constraints.maxWidth > 600) {
+                            buttonWidth = 600;
+                          } else {
+                            buttonWidth = constraints.maxWidth;
+                          }
+                          return ConstrainedBox(
+                              constraints: const BoxConstraints(
+                                maxWidth: 600,
                               ),
-                            ]
+                              child: !signInOrSignUp ? SizedBox(
+                                  width: buttonWidth,
+                                  child: const MAILLABEL(
+                                    leftIcon: Icons.mail_outline_rounded,
+                                    labelName: 'Email Address',
+                                    verifyMail: true,
+                                    hiddenPassword: false,
+                                  ),
+                              )
+                                  :
+                                  Column(
+                                    children: [
+                                      SizedBox(
+                                        width: buttonWidth,
+                                        child: const MAILLABEL(
+                                          leftIcon: Icons.person,
+                                          labelName: 'Username',
+                                          verifyMail: false,
+                                          hiddenPassword: false,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      SizedBox(
+                                        width: buttonWidth,
+                                        child: const MAILLABEL(
+                                          leftIcon: Icons.mail_outline_rounded,
+                                          labelName: 'Email Address',
+                                          verifyMail: true,
+                                          hiddenPassword: false,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      SizedBox(
+                                        width: buttonWidth,
+                                        child: const MAILLABEL(
+                                          leftIcon: Icons.lock_rounded,
+                                          labelName: 'Password',
+                                          verifyMail: false,
+                                          hiddenPassword: true,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                          );
+                        }
+                    ),
+                    const SizedBox(height: 20),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final double buttonWidth;
+                        if (constraints.maxWidth > 600) {
+                          buttonWidth = 600;
+                        } else {
+                          buttonWidth = constraints.maxWidth;
+                        }
+                        return ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxWidth: 600,
                           ),
+                          child: SizedBox(
+                            width: buttonWidth,
+                            child:Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 30),
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              decoration: BoxDecoration(
+                                color: const Color(0xff0266ff),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                !signInOrSignUp ? 'Continue':'Sign Up',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Color(0xffffffff),
+                                  fontFamily: 'RubikR'
+                                ),
+                              ),
+                            )
+                          )
                         );
                       }
                     ),
                     const SizedBox(height: 20),
                     LayoutBuilder(
                       builder: (context, constraints) {
-                        final double buttonWidth = constraints.maxWidth;
+                        final double w;
+                        if (constraints.maxWidth>488){w=488;}else{w=constraints.maxWidth;}
+                        final double buttonWidth = (w - 69) / 2;
                         return Container(
                           margin: const EdgeInsets.symmetric(horizontal: 30),
                           child: IntrinsicWidth(
@@ -187,7 +292,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                 )
                               ]
                             )
-
                           )
                         );
                       }
@@ -248,7 +352,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
                         ),
                       ]
                     ),
-
                   ]
                 )
               )
