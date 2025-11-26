@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'mail_label.dart';
+import 'verify_bloc.dart';
 
 void main() async {
   runApp(const MyApp());
@@ -28,7 +29,98 @@ class MyLoginPage extends StatefulWidget {
 }
 
 class _MyLoginPageState extends State<MyLoginPage> {
+  String username = '';
+  String password = '';
+  String email = '';
+
   bool signInOrSignUp = true;
+  late List<MAILLABELController> mailLabelControllers1;
+  late MAILLABELController mailLabelController2;
+  bool firstCheckCompleted = false;
+  bool secondCheckBegin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeControllers();
+  }
+
+  @override
+  void didUpdateWidget(MyLoginPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _initializeControllers();
+    setState(() {
+      firstCheckCompleted = false;
+    });
+  }
+
+  void _initializeControllers() {
+    if (signInOrSignUp) {
+      mailLabelControllers1 = List.generate(3, (index) => MAILLABELController());
+    } else {
+      mailLabelControllers1 = List.generate(1, (index) => MAILLABELController());
+      mailLabelController2 = MAILLABELController();
+    }
+  }
+
+  void _enableErrorMessagesOrContinue() {
+    bool allValid = true;
+    for (final controller in mailLabelControllers1) {
+      controller.showErrorMessage();
+      if (!controller.isValid()) {
+        allValid = false;
+      }
+    }
+    if (allValid) {
+      _updateVariablesFromControllers();
+      setState(() {
+        firstCheckCompleted = true;
+        if (signInOrSignUp) {
+          checkDetails();
+        } else {
+          checkMail();
+        }
+      });
+    }
+  }
+
+  void _updateVariablesFromControllers() {
+    if (signInOrSignUp) {
+      username = mailLabelControllers1[0].myText();
+      email = mailLabelControllers1[1].myText();
+      password = mailLabelControllers1[2].myText();
+    } else {
+      email = mailLabelControllers1[0].myText();
+      if (secondCheckBegin) {
+        password = mailLabelController2.myText();
+      }
+    }
+  }
+
+  void checkMail(){
+    //Тут будет обращение на сервер для проверки существования почты
+    print('Проверка почты для: email=$email');
+    setState(() {
+      secondCheckBegin = true;
+    });
+  }
+  void checkDetails(){
+    //Тут будет обращение на сервер для проверки пользователя
+    _updateVariablesFromControllers();
+    print('Проверка для: email=$email, password=$password, username=$username');
+    setState(() {
+      secondCheckBegin = true;
+    });
+  }
+  void checkPassword(){
+    //Тут будет обращение на сервер для проверки пароля
+    _updateVariablesFromControllers();
+    print('Проверка пароля для: email=$email, password=$password');
+    bool result = false;
+    setState(() {
+      mailLabelController2.showErrorMessage();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +195,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                   onTap: () {
                                     setState(() {
                                       signInOrSignUp = false;
+                                      _initializeControllers();
                                     });
                                   },
                                   child: SizedBox(
@@ -131,6 +224,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                   onTap: () {
                                     setState(() {
                                       signInOrSignUp = true;
+                                      _initializeControllers();
                                     });
                                   },
                                   child: SizedBox(
@@ -162,6 +256,115 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     ),
                     const SizedBox(height: 20),
                     LayoutBuilder(
+                      builder: (context, constraints) {
+                        final double buttonWidth;
+                        if (constraints.maxWidth > 600) {
+                          buttonWidth = 600;
+                        } else {
+                          buttonWidth = constraints.maxWidth;
+                        }
+                        return !secondCheckBegin ? ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxWidth: 600,
+                          ),
+                          child: !signInOrSignUp ?
+                          SizedBox(
+                            width: buttonWidth,
+                            child: MAILLABEL(
+                              leftIcon: Icons.mail_outline_rounded,
+                              labelName: 'Email Address',
+                              hiddenText: false,
+                              verifyType: VerifyType.mail,
+                              showCheck: true,
+                              errorMessage: 'Invalid email address',
+                              controller: mailLabelControllers1[0],
+                            ),
+                          )
+                          :
+                          Column(
+                            children: [
+                              SizedBox(
+                                width: buttonWidth,
+                                child: MAILLABEL(
+                                  leftIcon: Icons.person,
+                                  labelName: 'Username',
+                                  hiddenText: false,
+                                  verifyType: VerifyType.username,
+                                  showCheck: false,
+                                  minUserLen: 3,
+                                  maxUserLen: 20,
+                                  errorMessage: 'Username must be between 3 and 20 characters',
+                                  controller: mailLabelControllers1[0],
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              SizedBox(
+                                width: buttonWidth,
+                                child: MAILLABEL(
+                                  leftIcon: Icons.mail_outline_rounded,
+                                  labelName: 'Email Address',
+                                  hiddenText: false,
+                                  verifyType: VerifyType.mail,
+                                  showCheck: true,
+                                  errorMessage: 'Invalid email address',
+                                  controller: mailLabelControllers1[1],
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              SizedBox(
+                                width: buttonWidth,
+                                child: MAILLABEL(
+                                  leftIcon: Icons.lock_rounded,
+                                  labelName: 'Password',
+                                  hiddenText: true,
+                                  verifyType: VerifyType.password,
+                                  showCheck: false,
+                                  minPassLen: 8,
+                                  errorMessage: 'Password must be at least 8 characters',
+                                  controller: mailLabelControllers1[2],
+                                ),
+                              ),
+                            ],
+                          )
+                        )
+                        : ConstrainedBox(
+                            constraints: const BoxConstraints(
+                              maxWidth: 600,
+                            ),
+                            child: !signInOrSignUp
+                              ? SizedBox(
+                              width: buttonWidth,
+                              child: MAILLABEL(
+                                leftIcon: Icons.lock_rounded,
+                                labelName: 'Password',
+                                hiddenText: true,
+                                verifyType: VerifyType.password,
+                                showCheck: false,
+                                minPassLen: 8,
+                                errorMessage: 'Incorrect password',
+                                controller: mailLabelController2,
+                              ),
+                            )
+                            : Container()
+
+                        );
+                      }
+                    ),
+                    const SizedBox(height: 20),
+                    !firstCheckCompleted || secondCheckBegin
+                    ? GestureDetector(
+                      onTap: () {
+                        if (secondCheckBegin) {
+                          if (!signInOrSignUp) {
+                            checkPassword();
+                          } else {
+                            checkDetails();
+                          }
+                        } else {
+                          _enableErrorMessagesOrContinue();
+                        }
+                      },
+                      child: LayoutBuilder(
                         builder: (context, constraints) {
                           final double buttonWidth;
                           if (constraints.maxWidth > 600) {
@@ -170,90 +373,41 @@ class _MyLoginPageState extends State<MyLoginPage> {
                             buttonWidth = constraints.maxWidth;
                           }
                           return ConstrainedBox(
-                              constraints: const BoxConstraints(
-                                maxWidth: 600,
-                              ),
-                              child: !signInOrSignUp ? SizedBox(
-                                  width: buttonWidth,
-                                  child: const MAILLABEL(
-                                    leftIcon: Icons.mail_outline_rounded,
-                                    labelName: 'Email Address',
-                                    verifyMail: true,
-                                    hiddenPassword: false,
+                            constraints: const BoxConstraints(
+                              maxWidth: 600,
+                            ),
+                            child: SizedBox(
+                              width: buttonWidth,
+                              child:Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 30),
+                                padding: const EdgeInsets.symmetric(vertical: 20),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff0266ff),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  !signInOrSignUp ? (!secondCheckBegin?'Continue':'Sign In'):'Sign Up',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    color: Color(0xffffffff),
+                                    fontFamily: 'RubikR'
                                   ),
+                                ),
                               )
-                                  :
-                                  Column(
-                                    children: [
-                                      SizedBox(
-                                        width: buttonWidth,
-                                        child: const MAILLABEL(
-                                          leftIcon: Icons.person,
-                                          labelName: 'Username',
-                                          verifyMail: false,
-                                          hiddenPassword: false,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 20),
-                                      SizedBox(
-                                        width: buttonWidth,
-                                        child: const MAILLABEL(
-                                          leftIcon: Icons.mail_outline_rounded,
-                                          labelName: 'Email Address',
-                                          verifyMail: true,
-                                          hiddenPassword: false,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 20),
-                                      SizedBox(
-                                        width: buttonWidth,
-                                        child: const MAILLABEL(
-                                          leftIcon: Icons.lock_rounded,
-                                          labelName: 'Password',
-                                          verifyMail: false,
-                                          hiddenPassword: true,
-                                        ),
-                                      ),
-                                    ],
-                                  )
+                            )
                           );
                         }
-                    ),
-                    const SizedBox(height: 20),
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        final double buttonWidth;
-                        if (constraints.maxWidth > 600) {
-                          buttonWidth = 600;
-                        } else {
-                          buttonWidth = constraints.maxWidth;
-                        }
-                        return ConstrainedBox(
-                          constraints: const BoxConstraints(
-                            maxWidth: 600,
-                          ),
-                          child: SizedBox(
-                            width: buttonWidth,
-                            child:Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 30),
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              decoration: BoxDecoration(
-                                color: const Color(0xff0266ff),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                !signInOrSignUp ? 'Continue':'Sign Up',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Color(0xffffffff),
-                                  fontFamily: 'RubikR'
-                                ),
-                              ),
-                            )
-                          )
-                        );
-                      }
+                      ),
+                    )
+                    : const SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Color(0xff0266ff)),
+                        backgroundColor: Color(0xffe0e0e0),
+                        strokeWidth: 6,
+                      ),
                     ),
                     const SizedBox(height: 20),
                     LayoutBuilder(

@@ -1,134 +1,235 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'verify_bloc.dart';
 
 class MAILLABEL extends StatefulWidget {
   const MAILLABEL({
     super.key,
-    required this.leftIcon,
-    required this.labelName,
-    required this.verifyMail,
-    required this.hiddenPassword,
+    required this.leftIcon,        // Иконка
+    required this.labelName,       // Имя поля
+    required this.hiddenText,      // Скрываем ли текст
+    required this.verifyType,      // Способ проверки текста
+    required this.showCheck,       // Показывать красный крестик или зелёную галочку при verifyType != none
+    this.minPassLen = 8,
+    this.minUserLen = 3,
+    this.maxUserLen = 20,
+    this.errorMessage = '',
+    this.controller,
   });
+
   final IconData leftIcon;
   final String labelName;
-  final bool verifyMail;  // Проверяем ли формат адреса электронной почты
-  final bool hiddenPassword;
+  final bool hiddenText;
+  final VerifyType verifyType;
+  final bool showCheck;
+  final int minPassLen;
+  final int minUserLen;
+  final int maxUserLen;
+  final String errorMessage;
+  final MAILLABELController? controller;
+
   @override
   State<MAILLABEL> createState() => _MAILLABELState();
 }
+
+class MAILLABELController {
+  late _MAILLABELState _state;
+  void showErrorMessage() {
+    _state.showErrorMessage();
+  }
+  void _attach(_MAILLABELState state) {
+    _state = state;
+  }
+  bool isValid() {
+    return _state.isValid();
+  }
+  String myText() {
+    return _state._controller.text;
+  }
+  void newErrorMessage(String text) {
+    _state.newErrorMessage(text);
+  }
+}
+
 class _MAILLABELState extends State<MAILLABEL> {
-  final TextEditingController _mailController = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   bool _obscure = true;
+  late VerifyBloc _labelBloc;
+  bool showMessage = false;
+  String _currentErrorMessage = '';
+
+  void showErrorMessage() {
+    setState(() {
+      showMessage = true;
+    });
+  }
+
+  bool isValid() {
+    return _labelBloc.state is LabelValid;
+  }
+
+  void newErrorMessage(String text) {
+    _currentErrorMessage = text;
+  }
+
+  @override
+  void didUpdateWidget(MAILLABEL oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.verifyType != widget.verifyType) {
+      _controller.clear();
+      _labelBloc.add(LabelValueChange(''));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-  }
-  @override
-  void dispose() {
-    _mailController.dispose();
-    super.dispose();
+    _currentErrorMessage = widget.errorMessage;
+    _labelBloc = VerifyBloc(
+      verifyType: widget.verifyType,
+      minPassLen: widget.minPassLen,
+      minUserLen: widget.minUserLen,
+      maxUserLen: widget.maxUserLen,
+    );
+
+    if (widget.controller != null) {
+      widget.controller!._attach(this);
+    }
   }
 
-  bool _isMail() {
-    if (_mailController.text.isEmpty) return false;
-    if (_mailController.text.length > 254) return false;
-    final parts = _mailController.text.split('@');
-    if (parts.length != 2) return false;
-    if (parts[0].isEmpty || parts[0].length > 64) return false;
-    if (parts[1].isEmpty || parts[1].length > 253) return false;
-    if (parts[1].contains('..')) return false;
-    if (parts[1].startsWith('.') || parts[1].endsWith('.')) return false;
-    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-    return emailRegex.hasMatch(_mailController.text);
+  @override
+  void dispose() {
+    _controller.dispose();
+    _labelBloc.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 30),
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xffffffff),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: const Color(0xff9a9a9a),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BlocProvider(
+      create: (context) => _labelBloc,
+      child: Column(
         children: [
-          const SizedBox(width: 30),
-          Icon(widget.leftIcon, color: const Color(0xff686868), size: 30,),
-          const SizedBox(width: 30),
           Container(
-              height: 40,
-              width: 1,
-              color: const Color(0xff9a9a9a),
+              margin: const EdgeInsets.symmetric(horizontal: 30),
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                color: const Color(0xffffffff),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: const Color(0xff9a9a9a),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(width: 30),
+                  Icon(widget.leftIcon, color: const Color(0xff686868), size: 30,),
+                  const SizedBox(width: 30),
+                  Container(
+                    height: 40,
+                    width: 1,
+                    color: const Color(0xff9a9a9a),
+                  ),
+                  const SizedBox(width: 30),
+                  Expanded(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.labelName,
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xff686868),
+                                  fontFamily: 'RubikR'
+                              ),
+                            ),
+                            TextFormField(
+                              controller: _controller,
+                              obscureText: widget.hiddenText && _obscure,
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                focusedErrorBorder: InputBorder.none,
+                                contentPadding: EdgeInsets.zero,
+                                isDense: true,
+                              ),
+                              style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Color(0xff000000),
+                                  fontFamily: 'RubikB'
+                              ),
+                              onChanged: (value) {
+                                _labelBloc.add(LabelValueChange(value));
+                                showMessage = false;
+                                setState(() {});
+                              },
+                            ),
+                          ]
+                      )
+                  ),
+                  if (widget.verifyType != VerifyType.none && widget.showCheck)
+                    BlocBuilder<VerifyBloc, LabelValidationState>(
+                      builder: (context, state) {
+                        if (_controller.text.isEmpty) return const SizedBox();
+
+                        return state is LabelValid
+                            ? const Icon(Icons.check_circle_rounded, color: Color(0xff298b4b))
+                            : const Icon(Icons.cancel, color: Color(0xff700000));
+                      },
+                    ),
+                  if (widget.hiddenText)
+                    _obscure
+                        ? IconButton(
+                      onPressed: () {
+                        _obscure = false;
+                        setState(() {});
+                      },
+                      icon: const Icon(Icons.visibility_off_outlined),
+                      color: const Color(0xff686868),
+                      iconSize: 26,
+                    )
+                        : IconButton(
+                      onPressed: () {
+                        _obscure = true;
+                        setState(() {});
+                      },
+                      icon: const Icon(Icons.remove_red_eye_outlined),
+                      color: const Color(0xff686868),
+                      iconSize: 26,
+                    ),
+                  const SizedBox(width: 20),
+                ],
+              )
           ),
-          const SizedBox(width: 30),
-        Expanded(
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.labelName,
-                  textAlign: TextAlign.left,
-                  style: const TextStyle(
-                      fontSize: 14,
-                      color: Color(0xff686868),
-                      fontFamily: 'RubikR'
-                  ),
-                ),
-                TextFormField(
-                  controller: _mailController,
-                  obscureText:  widget.hiddenPassword && _obscure,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    focusedErrorBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
-                    isDense: true,
-                  ),
-                  style: const TextStyle(
-                      fontSize: 20,
-                      color: Color(0xff000000),
-                      fontFamily: 'RubikB'
-                  ),
-                  onChanged: (value) {
-                    setState(() {});
-                  },
-                ),
-              ]
-          )
-        ),
-          if (widget.verifyMail && _mailController.text.isNotEmpty)
-            _isMail()
-              ? const Icon(Icons.check_circle_rounded, color: Color(0xff298b4b))
-              : const Icon(Icons.cancel, color: Color(0xffff0000)),
-          if (widget.hiddenPassword)
-            _obscure
-              ? IconButton(
-                  onPressed: () {
-                    _obscure=false;
-                    setState(() {});
-                  },
-                  icon: const Icon(Icons.visibility_off_outlined),
-                  color: const Color(0xff686868),
-                  iconSize: 26,
-                )
-              : IconButton(
-                  onPressed: () {
-                    _obscure=true;
-                    setState(() {});
-                  },
-                  icon: const Icon(Icons.remove_red_eye_outlined),
-                  color: const Color(0xff686868),
-                  iconSize: 26,
-                ),
-          SizedBox(width: widget.verifyMail?28:20),
-        ],
+          if (widget.verifyType != VerifyType.none)
+            BlocBuilder<VerifyBloc, LabelValidationState>(
+              builder: (context, state) {
+                if (showMessage && state is! LabelValid && _controller.text.isNotEmpty){
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Text(
+                        _currentErrorMessage,
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color(0xff700000),
+                          fontFamily: 'RubikR'
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return Container();
+              },
+            ),
+        ]
       )
     );
   }
