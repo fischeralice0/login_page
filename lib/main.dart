@@ -1,29 +1,23 @@
 import 'package:flutter/material.dart';
 import 'mail_label.dart';
 import 'verify_bloc.dart';
+import 'colors_and_images.dart';
 
 void main() async {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({
-    super.key,
-  });
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Login Page',
-      home: MyLoginPage(),
-    );
+    return const MaterialApp(title: 'Login Page', home: MyLoginPage());
   }
 }
 
 class MyLoginPage extends StatefulWidget {
-  const MyLoginPage({
-    super.key
-  });
+  const MyLoginPage({super.key});
   @override
   State<MyLoginPage> createState() => _MyLoginPageState();
 }
@@ -56,9 +50,15 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
   void _initializeControllers() {
     if (signInOrSignUp) {
-      mailLabelControllers1 = List.generate(3, (index) => MAILLABELController());
+      mailLabelControllers1 = List.generate(
+        3,
+        (index) => MAILLABELController(),
+      );
     } else {
-      mailLabelControllers1 = List.generate(1, (index) => MAILLABELController());
+      mailLabelControllers1 = List.generate(
+        1,
+        (index) => MAILLABELController(),
+      );
       mailLabelController2 = MAILLABELController();
     }
   }
@@ -97,14 +97,15 @@ class _MyLoginPageState extends State<MyLoginPage> {
     }
   }
 
-  void checkMail(){
+  void checkMail() {
     //Тут будет обращение на сервер для проверки существования почты
     print('Проверка почты для: email=$email');
     setState(() {
       secondCheckBegin = true;
     });
   }
-  void checkDetails(){
+
+  void checkDetails() {
     //Тут будет обращение на сервер для проверки пользователя
     _updateVariablesFromControllers();
     print('Проверка для: email=$email, password=$password, username=$username');
@@ -112,7 +113,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
       secondCheckBegin = true;
     });
   }
-  void checkPassword(){
+
+  void checkPassword() {
     //Тут будет обращение на сервер для проверки пароля
     _updateVariablesFromControllers();
     print('Проверка пароля для: email=$email, password=$password');
@@ -125,10 +127,10 @@ class _MyLoginPageState extends State<MyLoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffffffff),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
-          children:[
+          children: [
             Padding(
               padding: const EdgeInsets.only(top: 60),
               child: Row(
@@ -137,58 +139,65 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   SizedBox(
                     width: 50,
                     height: 50,
-                    child: Image.asset(
-                      'images/logo.png',
-                      fit: BoxFit.cover,
-                    ),
+                    child: Image.asset(AppImages.logo, fit: BoxFit.cover),
                   ),
                   const SizedBox(width: 16),
-                  const Text('Projyn',
+                  const Text(
+                    'Projyn',
                     style: TextStyle(
                       fontSize: 32,
-                      color: Color(0xff000000),
-                      fontFamily: 'RubikSB'
+                      color: Colors.black,
+                      fontFamily: 'RubikSB',
                     ),
                   ),
-                ]
+                ],
               ),
             ),
             Expanded(
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children:[
-                    const Text('Welcome Back',
+                  children: [
+                    const Text(
+                      'Welcome Back',
                       style: TextStyle(
                         fontSize: 40,
-                        color: Color(0xff000000),
-                        fontFamily: 'RubikB'
+                        color: Colors.black,
+                        fontFamily: 'RubikB',
                       ),
                     ),
-                    const Text('Please enter Your details',
+                    const Text(
+                      'Please enter Your details',
                       style: TextStyle(
                         fontSize: 20,
-                        color: Color(0xff9a9a9a),
-                        fontFamily: 'RubikR'
+                        color: AppColors.dustyGray,
+                        fontFamily: 'RubikR',
                       ),
                     ),
                     const SizedBox(height: 20),
                     LayoutBuilder(
                       builder: (context, constraints) {
                         final double w;
-                        if (constraints.maxWidth>600){w=600;}else{w=constraints.maxWidth;}
+                        if (constraints.maxWidth > 600) {
+                          w = 600;
+                        } else {
+                          w = constraints.maxWidth;
+                        }
                         final double buttonWidth = (w - 69) / 2;
                         return Container(
-                          padding: const EdgeInsets.only(left: 3, top:3, bottom:3, right:3),
+                          padding: const EdgeInsets.only(
+                            left: 3,
+                            top: 3,
+                            bottom: 3,
+                            right: 3,
+                          ),
                           margin: const EdgeInsets.symmetric(horizontal: 30),
                           decoration: BoxDecoration(
-                            color: const Color(0xfff0eff2),
+                            color: AppColors.athensGray,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: ConstrainedBox(
-                            constraints: const BoxConstraints(
-                              maxWidth: 534,
-                            ),
+                            constraints: const BoxConstraints(maxWidth: 534),
                             child: Row(
                               children: [
                                 GestureDetector(
@@ -201,9 +210,13 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                   child: SizedBox(
                                     width: buttonWidth,
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 20),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 20,
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: signInOrSignUp ? const Color(0xfff0eff2): const Color(0xffffffff),
+                                        color: signInOrSignUp
+                                            ? AppColors.athensGray
+                                            : Colors.white,
                                         borderRadius: BorderRadius.circular(17),
                                       ),
                                       child: const Center(
@@ -211,15 +224,15 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                           'Sign In',
                                           style: TextStyle(
                                             fontSize: 20,
-                                            color: Color(0xff000000),
-                                            fontFamily: 'RubikR'
+                                            color: Colors.black,
+                                            fontFamily: 'RubikR',
                                           ),
                                         ),
                                       ),
-                                    )
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(width:3),
+                                const SizedBox(width: 3),
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
@@ -230,9 +243,13 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                   child: SizedBox(
                                     width: buttonWidth,
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 20),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 20,
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: signInOrSignUp ? const Color(0xffffffff): const Color(0xfff0eff2),
+                                        color: signInOrSignUp
+                                            ? Colors.white
+                                            : AppColors.athensGray,
                                         borderRadius: BorderRadius.circular(17),
                                       ),
                                       child: const Center(
@@ -240,19 +257,19 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                           'Sign Up',
                                           style: TextStyle(
                                             fontSize: 20,
-                                            color: Color(0xff000000),
-                                            fontFamily: 'RubikR'
+                                            color: Colors.black,
+                                            fontFamily: 'RubikR',
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ]
-                            )
-                          )
+                              ],
+                            ),
+                          ),
                         );
-                      }
+                      },
                     ),
                     const SizedBox(height: 20),
                     LayoutBuilder(
@@ -263,157 +280,177 @@ class _MyLoginPageState extends State<MyLoginPage> {
                         } else {
                           buttonWidth = constraints.maxWidth;
                         }
-                        return !secondCheckBegin ? ConstrainedBox(
-                          constraints: const BoxConstraints(
-                            maxWidth: 600,
-                          ),
-                          child: !signInOrSignUp ?
-                          SizedBox(
-                            width: buttonWidth,
-                            child: MAILLABEL(
-                              leftIcon: Icons.mail_outline_rounded,
-                              labelName: 'Email Address',
-                              hiddenText: false,
-                              verifyType: VerifyType.mail,
-                              showCheck: true,
-                              errorMessage: 'Invalid email address',
-                              controller: mailLabelControllers1[0],
-                            ),
-                          )
-                          :
-                          Column(
-                            children: [
-                              SizedBox(
-                                width: buttonWidth,
-                                child: MAILLABEL(
-                                  leftIcon: Icons.person,
-                                  labelName: 'Username',
-                                  hiddenText: false,
-                                  verifyType: VerifyType.username,
-                                  showCheck: false,
-                                  minUserLen: 3,
-                                  maxUserLen: 20,
-                                  errorMessage: 'Username must be between 3 and 20 characters',
-                                  controller: mailLabelControllers1[0],
+                        return !secondCheckBegin
+                            ? ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 600,
                                 ),
-                              ),
-                              const SizedBox(height: 20),
-                              SizedBox(
-                                width: buttonWidth,
-                                child: MAILLABEL(
-                                  leftIcon: Icons.mail_outline_rounded,
-                                  labelName: 'Email Address',
-                                  hiddenText: false,
-                                  verifyType: VerifyType.mail,
-                                  showCheck: true,
-                                  errorMessage: 'Invalid email address',
-                                  controller: mailLabelControllers1[1],
+                                child: !signInOrSignUp
+                                    ? SizedBox(
+                                        width: buttonWidth,
+                                        child: MAILLABEL(
+                                          leftIcon: Icons.mail_outline_rounded,
+                                          labelName: 'Email Address',
+                                          hiddenText: false,
+                                          verifyType: VerifyType.mail,
+                                          showCheck: true,
+                                          errorMessage: 'Invalid email address',
+                                          controller: mailLabelControllers1[0],
+                                        ),
+                                      )
+                                    : Column(
+                                        children: [
+                                          SizedBox(
+                                            width: buttonWidth,
+                                            child: MAILLABEL(
+                                              leftIcon: Icons.person,
+                                              labelName: 'Username',
+                                              hiddenText: false,
+                                              verifyType: VerifyType.username,
+                                              showCheck: false,
+                                              minUserLen: 3,
+                                              maxUserLen: 20,
+                                              errorMessage:
+                                                  'Username must be between 3 and 20 characters',
+                                              controller:
+                                                  mailLabelControllers1[0],
+                                            ),
+                                          ),
+                                          const SizedBox(height: 20),
+                                          SizedBox(
+                                            width: buttonWidth,
+                                            child: MAILLABEL(
+                                              leftIcon:
+                                                  Icons.mail_outline_rounded,
+                                              labelName: 'Email Address',
+                                              hiddenText: false,
+                                              verifyType: VerifyType.mail,
+                                              showCheck: true,
+                                              errorMessage:
+                                                  'Invalid email address',
+                                              controller:
+                                                  mailLabelControllers1[1],
+                                            ),
+                                          ),
+                                          const SizedBox(height: 20),
+                                          SizedBox(
+                                            width: buttonWidth,
+                                            child: MAILLABEL(
+                                              leftIcon: Icons.lock_rounded,
+                                              labelName: 'Password',
+                                              hiddenText: true,
+                                              verifyType: VerifyType.password,
+                                              showCheck: false,
+                                              minPassLen: 8,
+                                              errorMessage:
+                                                  'Password must be at least 8 characters',
+                                              controller:
+                                                  mailLabelControllers1[2],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                              )
+                            : ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 600,
                                 ),
-                              ),
-                              const SizedBox(height: 20),
-                              SizedBox(
-                                width: buttonWidth,
-                                child: MAILLABEL(
-                                  leftIcon: Icons.lock_rounded,
-                                  labelName: 'Password',
-                                  hiddenText: true,
-                                  verifyType: VerifyType.password,
-                                  showCheck: false,
-                                  minPassLen: 8,
-                                  errorMessage: 'Password must be at least 8 characters',
-                                  controller: mailLabelControllers1[2],
-                                ),
-                              ),
-                            ],
-                          )
-                        )
-                        : ConstrainedBox(
-                            constraints: const BoxConstraints(
-                              maxWidth: 600,
-                            ),
-                            child: !signInOrSignUp
-                              ? SizedBox(
-                              width: buttonWidth,
-                              child: MAILLABEL(
-                                leftIcon: Icons.lock_rounded,
-                                labelName: 'Password',
-                                hiddenText: true,
-                                verifyType: VerifyType.password,
-                                showCheck: false,
-                                minPassLen: 8,
-                                errorMessage: 'Incorrect password',
-                                controller: mailLabelController2,
-                              ),
-                            )
-                            : Container()
-
-                        );
-                      }
+                                child: !signInOrSignUp
+                                    ? SizedBox(
+                                        width: buttonWidth,
+                                        child: MAILLABEL(
+                                          leftIcon: Icons.lock_rounded,
+                                          labelName: 'Password',
+                                          hiddenText: true,
+                                          verifyType: VerifyType.password,
+                                          showCheck: false,
+                                          minPassLen: 8,
+                                          errorMessage: 'Incorrect password',
+                                          controller: mailLabelController2,
+                                        ),
+                                      )
+                                    : Container(),
+                              );
+                      },
                     ),
                     const SizedBox(height: 20),
                     !firstCheckCompleted || secondCheckBegin
-                    ? GestureDetector(
-                      onTap: () {
-                        if (secondCheckBegin) {
-                          if (!signInOrSignUp) {
-                            checkPassword();
-                          } else {
-                            checkDetails();
-                          }
-                        } else {
-                          _enableErrorMessagesOrContinue();
-                        }
-                      },
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          final double buttonWidth;
-                          if (constraints.maxWidth > 600) {
-                            buttonWidth = 600;
-                          } else {
-                            buttonWidth = constraints.maxWidth;
-                          }
-                          return ConstrainedBox(
-                            constraints: const BoxConstraints(
-                              maxWidth: 600,
-                            ),
-                            child: SizedBox(
-                              width: buttonWidth,
-                              child:Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 30),
-                                padding: const EdgeInsets.symmetric(vertical: 20),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xff0266ff),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  !signInOrSignUp ? (!secondCheckBegin?'Continue':'Sign In'):'Sign Up',
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    color: Color(0xffffffff),
-                                    fontFamily: 'RubikR'
+                        ? GestureDetector(
+                            onTap: () {
+                              if (secondCheckBegin) {
+                                if (!signInOrSignUp) {
+                                  checkPassword();
+                                } else {
+                                  checkDetails();
+                                }
+                              } else {
+                                _enableErrorMessagesOrContinue();
+                              }
+                            },
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                final double buttonWidth;
+                                if (constraints.maxWidth > 600) {
+                                  buttonWidth = 600;
+                                } else {
+                                  buttonWidth = constraints.maxWidth;
+                                }
+                                return ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 600,
                                   ),
-                                ),
-                              )
-                            )
-                          );
-                        }
-                      ),
-                    )
-                    : const SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(Color(0xff0266ff)),
-                        backgroundColor: Color(0xffe0e0e0),
-                        strokeWidth: 6,
-                      ),
-                    ),
+                                  child: SizedBox(
+                                    width: buttonWidth,
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        horizontal: 30,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 20,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.blueRibbon,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Text(
+                                        !signInOrSignUp
+                                            ? (!secondCheckBegin
+                                                  ? 'Continue'
+                                                  : 'Sign In')
+                                            : 'Sign Up',
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.white,
+                                          fontFamily: 'RubikR',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                        : const SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation(
+                                AppColors.blueRibbon,
+                              ),
+                              backgroundColor: AppColors.alto,
+                              strokeWidth: 6,
+                            ),
+                          ),
                     const SizedBox(height: 20),
                     LayoutBuilder(
                       builder: (context, constraints) {
                         final double w;
-                        if (constraints.maxWidth>488){w=488;}else{w=constraints.maxWidth;}
+                        if (constraints.maxWidth > 488) {
+                          w = 488;
+                        } else {
+                          w = constraints.maxWidth;
+                        }
                         final double buttonWidth = (w - 69) / 2;
                         return Container(
                           margin: const EdgeInsets.symmetric(horizontal: 30),
@@ -424,7 +461,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                   child: Container(
                                     height: 1,
                                     width: buttonWidth,
-                                    color: const Color(0xff9a9a9a),
+                                    color: AppColors.dustyGray,
                                   ),
                                 ),
                                 const SizedBox(width: 50),
@@ -432,8 +469,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                   'or',
                                   style: TextStyle(
                                     fontSize: 20,
-                                    color: Color(0xff9a9a9a),
-                                    fontFamily: 'RubikB'
+                                    color: AppColors.dustyGray,
+                                    fontFamily: 'RubikB',
                                   ),
                                 ),
                                 const SizedBox(width: 50),
@@ -441,14 +478,14 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                   child: Container(
                                     height: 1,
                                     width: buttonWidth,
-                                    color: const Color(0xff9a9a9a),
+                                    color: AppColors.dustyGray,
                                   ),
-                                )
-                              ]
-                            )
-                          )
+                                ),
+                              ],
+                            ),
+                          ),
                         );
-                      }
+                      },
                     ),
                     const SizedBox(height: 30),
                     Row(
@@ -456,16 +493,14 @@ class _MyLoginPageState extends State<MyLoginPage> {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xffffffff),
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(30),
-                            border: Border.all(
-                              color: const Color(0xff9a9a9a),
-                            ),
+                            border: Border.all(color:AppColors.dustyGray),
                           ),
                           child: Transform.scale(
                             scale: 0.4,
                             child: Image.asset(
-                              'images/google.png',
+                              AppImages.google,
                               width: 60,
                               height: 60,
                               fit: BoxFit.contain,
@@ -475,13 +510,13 @@ class _MyLoginPageState extends State<MyLoginPage> {
                         const SizedBox(width: 20),
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xff000000),
+                            color: Colors.black,
                             borderRadius: BorderRadius.circular(30),
                           ),
                           child: Transform.scale(
                             scale: 0.4,
                             child: Image.asset(
-                              'images/apple.png',
+                              AppImages.apple,
                               width: 60,
                               height: 60,
                               fit: BoxFit.contain,
@@ -491,28 +526,28 @@ class _MyLoginPageState extends State<MyLoginPage> {
                         const SizedBox(width: 20),
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xff1a79f1),
+                            color: AppColors.dodgerBlue,
                             borderRadius: BorderRadius.circular(30),
                           ),
                           child: Transform.scale(
                             scale: 0.4,
                             child: Image.asset(
-                              'images/facebook.png',
-                               width: 60,
-                               height: 60,
-                               fit: BoxFit.contain,
+                              AppImages.facebook,
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.contain,
                             ),
                           ),
                         ),
-                      ]
+                      ],
                     ),
-                  ]
-                )
-              )
-            )
-          ]
-        )
-      )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

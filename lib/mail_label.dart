@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'verify_bloc.dart';
+import 'colors_and_images.dart';
 
 class MAILLABEL extends StatefulWidget {
   const MAILLABEL({
@@ -114,22 +115,22 @@ class _MAILLABELState extends State<MAILLABEL> {
               margin: const EdgeInsets.symmetric(horizontal: 30),
               padding: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(
-                color: const Color(0xffffffff),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: const Color(0xff9a9a9a),
+                  color: AppColors.dustyGray,
                 ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const SizedBox(width: 30),
-                  Icon(widget.leftIcon, color: const Color(0xff686868), size: 30,),
+                  Icon(widget.leftIcon, color: AppColors.doveGray, size: 30,),
                   const SizedBox(width: 30),
                   Container(
                     height: 40,
                     width: 1,
-                    color: const Color(0xff9a9a9a),
+                    color: AppColors.dustyGray,
                   ),
                   const SizedBox(width: 30),
                   Expanded(
@@ -141,7 +142,7 @@ class _MAILLABELState extends State<MAILLABEL> {
                               textAlign: TextAlign.left,
                               style: const TextStyle(
                                   fontSize: 14,
-                                  color: Color(0xff686868),
+                                  color: AppColors.doveGray,
                                   fontFamily: 'RubikR'
                               ),
                             ),
@@ -160,7 +161,7 @@ class _MAILLABELState extends State<MAILLABEL> {
                               ),
                               style: const TextStyle(
                                   fontSize: 20,
-                                  color: Color(0xff000000),
+                                  color: Colors.black,
                                   fontFamily: 'RubikB'
                               ),
                               onChanged: (value) {
@@ -178,8 +179,8 @@ class _MAILLABELState extends State<MAILLABEL> {
                         if (_controller.text.isEmpty) return const SizedBox();
 
                         return state is LabelValid
-                            ? const Icon(Icons.check_circle_rounded, color: Color(0xff298b4b))
-                            : const Icon(Icons.cancel, color: Color(0xff700000));
+                            ? const Icon(Icons.check_circle_rounded, color: AppColors.seaGreen)
+                            : const Icon(Icons.cancel, color: AppColors.red);
                       },
                     ),
                   if (widget.hiddenText)
@@ -190,7 +191,7 @@ class _MAILLABELState extends State<MAILLABEL> {
                         setState(() {});
                       },
                       icon: const Icon(Icons.visibility_off_outlined),
-                      color: const Color(0xff686868),
+                      color: AppColors.doveGray,
                       iconSize: 26,
                     )
                         : IconButton(
@@ -199,7 +200,7 @@ class _MAILLABELState extends State<MAILLABEL> {
                         setState(() {});
                       },
                       icon: const Icon(Icons.remove_red_eye_outlined),
-                      color: const Color(0xff686868),
+                      color: AppColors.doveGray,
                       iconSize: 26,
                     ),
                   const SizedBox(width: 20),
@@ -219,7 +220,7 @@ class _MAILLABELState extends State<MAILLABEL> {
                         textAlign: TextAlign.left,
                         style: const TextStyle(
                           fontSize: 14,
-                          color: Color(0xff700000),
+                          color: AppColors.red,
                           fontFamily: 'RubikR'
                         ),
                       ),
