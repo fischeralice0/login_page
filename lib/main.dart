@@ -75,21 +75,20 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: state.success == false ? [
-                        createTexts(),
-                        const SizedBox(height: 20),
-                        createSignInSignUpButton(state, context),
-                        const SizedBox(height: 20),
-                        createLabels(state),
-                        createBlueButtonOrLoad(state),
-                        const SizedBox(height: 20),
-                        createOrLine(),
-                        const SizedBox(height: 20),
-                        createOrButtons(),
-                      ]
-                          : [
-                        createSuccess(),
-                      ],
+                      children: state.success == false
+                          ? [
+                              createTexts(),
+                              const SizedBox(height: 20),
+                              createSignInSignUpButton(state, context),
+                              const SizedBox(height: 20),
+                              createLabels(state),
+                              createBlueButtonOrLoad(state),
+                              const SizedBox(height: 20),
+                              createOrLine(),
+                              const SizedBox(height: 20),
+                              createOrButtons(),
+                            ]
+                          : [createSuccess()],
                     ),
                   ),
                 ),
@@ -182,13 +181,13 @@ class _MyLoginPageState extends State<MyLoginPage> {
   }
 
   Widget partOfSignButton(
-      LoginPageState state,
-      double buttonWidth,
-      bool isSignIn
-      ) {
+    LoginPageState state,
+    double buttonWidth,
+    bool isSignIn,
+  ) {
     return GestureDetector(
       onTap: () {
-        if (state.isLoading == false){
+        if (state.isLoading == false) {
           if (state.signType == SignType.signIn && !isSignIn) {
             _signBloc.add(SignTypeChanged(SignType.signUp));
           }
@@ -203,8 +202,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
           padding: const EdgeInsets.symmetric(vertical: 20),
           decoration: BoxDecoration(
             color:
-            (state.signType == SignType.signIn && isSignIn) ||
-                (state.signType == SignType.signUp && !isSignIn)
+                (state.signType == SignType.signIn && isSignIn) ||
+                    (state.signType == SignType.signUp && !isSignIn)
                 ? Colors.white
                 : AppColors.athensGray,
             borderRadius: BorderRadius.circular(17),
@@ -281,15 +280,16 @@ class _MyLoginPageState extends State<MyLoginPage> {
     );
   }
 
-  Widget label(LoginPageState state,
-      LabelType labelType,
-      IconData leftIcon,
-      String labelName,
-      bool obscureText,
-      CheckType checkType,
-      String errorText,
-      bool showError,
-      ) {
+  Widget label(
+    LoginPageState state,
+    LabelType labelType,
+    IconData leftIcon,
+    String labelName,
+    bool obscureText,
+    CheckType checkType,
+    String errorText,
+    bool showError,
+  ) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return ConstrainedBox(
@@ -327,7 +327,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
                           ),
                           TextFormField(
                             controller: _getController(labelType),
-                            obscureText: obscureText ? _signBloc.state.obscurePass : false,
+                            obscureText:
+                                obscureText && _signBloc.state.obscurePass,
                             decoration: const InputDecoration(
                               border: InputBorder.none,
                               enabledBorder: InputBorder.none,
@@ -353,28 +354,28 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     if (checkType != CheckType.none)
                       checkType == CheckType.check
                           ? const Icon(
-                        Icons.check_circle_rounded,
-                        color: AppColors.seaGreen,
-                      )
+                              Icons.check_circle_rounded,
+                              color: AppColors.seaGreen,
+                            )
                           : const Icon(Icons.cancel, color: AppColors.red),
                     if (obscureText)
                       _signBloc.state.obscurePass
                           ? IconButton(
-                        onPressed: () {
-                          _signBloc.add(ObscurePass());
-                        },
-                        icon: const Icon(Icons.visibility_off_outlined),
-                        color: AppColors.doveGray,
-                        iconSize: 26,
-                      )
+                              onPressed: () {
+                                _signBloc.add(ObscurePass());
+                              },
+                              icon: const Icon(Icons.visibility_off_outlined),
+                              color: AppColors.doveGray,
+                              iconSize: 26,
+                            )
                           : IconButton(
-                        onPressed: () {
-                          _signBloc.add(ObscurePass());
-                        },
-                        icon: const Icon(Icons.remove_red_eye_outlined),
-                        color: AppColors.doveGray,
-                        iconSize: 26,
-                      ),
+                              onPressed: () {
+                                _signBloc.add(ObscurePass());
+                              },
+                              icon: const Icon(Icons.remove_red_eye_outlined),
+                              color: AppColors.doveGray,
+                              iconSize: 26,
+                            ),
                     const SizedBox(width: 20),
                   ],
                 ),
@@ -540,11 +541,11 @@ class _MyLoginPageState extends State<MyLoginPage> {
   }
 
   Widget createOrButton(
-      Color backcolor,
-      String image,
-      bool bord,
-      void Function() onTap,
-      ) {
+    Color backcolor,
+    String image,
+    bool bord,
+    void Function() onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -575,7 +576,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
     print('Facebook click');
   }
 
-  Widget createSuccess(){
+  Widget createSuccess() {
     return IconButton(
       onPressed: () {},
       icon: const Icon(Icons.check_circle_rounded),

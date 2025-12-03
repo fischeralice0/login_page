@@ -32,7 +32,7 @@ class LoginPageState {
 
     this.success = false,
   }) : labelTypes =
-      labelTypes ?? _getLabelTypes(SignType.signIn, requiredPassword);
+           labelTypes ?? _getLabelTypes(SignType.signIn, requiredPassword);
   SignType signType;
   List<LabelType> labelTypes;
   String buttonText;
@@ -104,9 +104,9 @@ class LoginPageState {
   }
 
   static List<LabelType> _getLabelTypes(
-      SignType signType,
-      bool requiredPassword,
-      ) {
+    SignType signType,
+    bool requiredPassword,
+  ) {
     if (signType == SignType.signIn && requiredPassword) {
       return [LabelType.pass];
     } else if (signType == SignType.signIn) {
@@ -159,16 +159,19 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
 
   void _onButtonPressed(ButtonPressed event, Emitter<LoginPageState> emit) {
     if (state.signType == SignType.signIn && state.requiredPassword) {
-      final String newPassError = _passCreateErrorText(state.pass, state.minPasswordLen);
+      final String newPassError = _passCreateErrorText(
+        state.pass,
+        state.minPasswordLen,
+      );
       if (newPassError != '') {
-        emit(state.copyWith(showPassError: true, errorPasswordText: newPassError));
-      }
-      else{
+        emit(
+          state.copyWith(showPassError: true, errorPasswordText: newPassError),
+        );
+      } else {
         emit(state.copyWith(isLoading: true));
         checkPassword(state.mail, state.pass);
       }
-    }
-    else {
+    } else {
       final String newMailError = _mailCreateErrorText(state.mail);
       final String newPassError = _passCreateErrorText(
         state.pass,
@@ -261,7 +264,9 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
     if (parts[1].length > 253) return 'Domain is too long';
     if (parts[1].contains('..')) return 'You cannot use two periods in a row';
     if (parts[1].startsWith('.')) return 'You cannot use a period after @';
-    if (parts[1].endsWith('.')) return 'An email address cannot end with a period';
+    if (parts[1].endsWith('.')) {
+      return 'An email address cannot end with a period';
+    }
     final emailRegex = RegExp(
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
     );
@@ -336,54 +341,80 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
           userError: 'This username already used',
         ),
       );
-    }
-    else {
+    } else {
       add(DataValidationSucceeded());
     }
   }
-  void _onMailValidationFailed(MailValidationFailed event, Emitter<LoginPageState> emit) {
-    emit(state.copyWith(
-      isLoading: false,
-      showMailError: true,
-      errorEmailText: event.errorMessage,
-    ));
+
+  void _onMailValidationFailed(
+    MailValidationFailed event,
+    Emitter<LoginPageState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        isLoading: false,
+        showMailError: true,
+        errorEmailText: event.errorMessage,
+      ),
+    );
   }
 
-  void _onDataValidationFailed(DataValidationFailed event, Emitter<LoginPageState> emit) {
-    emit(state.copyWith(
-      isLoading: false,
-      showMailError: true,
-      showPassError: true,
-      showUserError: true,
-      errorEmailText: event.mailError,
-      errorPasswordText: event.passError,
-      errorUsernameText: event.userError,
-    ));
+  void _onDataValidationFailed(
+    DataValidationFailed event,
+    Emitter<LoginPageState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        isLoading: false,
+        showMailError: true,
+        showPassError: true,
+        showUserError: true,
+        errorEmailText: event.mailError,
+        errorPasswordText: event.passError,
+        errorUsernameText: event.userError,
+      ),
+    );
   }
 
-  void _onPasswordRequired(PasswordRequired event, Emitter<LoginPageState> emit) {
-    emit(state.copyWith(
-      isLoading: false,
-      requiredPassword: true,
-      labelTypes: LoginPageState._getLabelTypes(state.signType, true),
-      showPassError: false,
-      buttonText: 'Sign In',
-    ));
+  void _onPasswordRequired(
+    PasswordRequired event,
+    Emitter<LoginPageState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        isLoading: false,
+        requiredPassword: true,
+        labelTypes: LoginPageState._getLabelTypes(state.signType, true),
+        showPassError: false,
+        buttonText: 'Sign In',
+      ),
+    );
   }
 
-  void _onDataValidationSucceeded(DataValidationSucceeded event, Emitter<LoginPageState> emit) {
+  void _onDataValidationSucceeded(
+    DataValidationSucceeded event,
+    Emitter<LoginPageState> emit,
+  ) {
     emit(state.copyWith(success: true));
   }
 
-  void _onPasswordValidationFailed(PasswordValidationFailed event, Emitter<LoginPageState> emit) {
-    emit(state.copyWith(
-      isLoading: false,
-      showPassError: true,
-      errorPasswordText: event.passError,
-    ));
+  void _onPasswordValidationFailed(
+    PasswordValidationFailed event,
+    Emitter<LoginPageState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        isLoading: false,
+        showPassError: true,
+        errorPasswordText: event.passError,
+      ),
+    );
   }
 
-  void _onPasswordValidationSucceeded(PasswordValidationSucceeded event, Emitter<LoginPageState> emit) {
+  void _onPasswordValidationSucceeded(
+    PasswordValidationSucceeded event,
+    Emitter<LoginPageState> emit,
+  ) {
     emit(state.copyWith(success: true));
   }
 }
