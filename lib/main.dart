@@ -149,42 +149,37 @@ class _MyLoginPageState extends State<MyLoginPage> {
   }
 
   Widget createSignInSignUpButton(LoginPageState state, BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double w;
-        if (constraints.maxWidth > 600) {
-          w = 600;
-        } else {
-          w = constraints.maxWidth;
-        }
-        final double buttonWidth = (w - 69) / 2;
-        return Container(
-          padding: const EdgeInsets.only(left: 3, top: 3, bottom: 3, right: 3),
-          margin: const EdgeInsets.symmetric(horizontal: 30),
-          decoration: BoxDecoration(
-            color: AppColors.athensGray,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 534),
-            child: Row(
-              children: [
-                partOfSignButton(state, buttonWidth, true),
-                const SizedBox(width: 3),
-                partOfSignButton(state, buttonWidth, false),
-              ],
-            ),
-          ),
-        );
-      },
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 600),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 3),
+        margin: const EdgeInsets.symmetric(horizontal: 30),
+        decoration: BoxDecoration(
+          color: AppColors.athensGray,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final double maxWidth = constraints.maxWidth > 600
+                ? 600
+                : constraints.maxWidth;
+            return SizedBox(
+              width: maxWidth,
+              child: Row(
+                children: [
+                  Expanded(child: partOfSignButton(state, true)),
+                  const SizedBox(width: 3),
+                  Expanded(child: partOfSignButton(state, false)),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 
-  Widget partOfSignButton(
-    LoginPageState state,
-    double buttonWidth,
-    bool isSignIn,
-  ) {
+  Widget partOfSignButton(LoginPageState state, bool isSignIn) {
     return GestureDetector(
       onTap: () {
         if (state.isLoading == false) {
@@ -196,26 +191,23 @@ class _MyLoginPageState extends State<MyLoginPage> {
           }
         }
       },
-      child: SizedBox(
-        width: buttonWidth,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          decoration: BoxDecoration(
-            color:
-                (state.signType == SignType.signIn && isSignIn) ||
-                    (state.signType == SignType.signUp && !isSignIn)
-                ? Colors.white
-                : AppColors.athensGray,
-            borderRadius: BorderRadius.circular(17),
-          ),
-          child: Center(
-            child: Text(
-              isSignIn ? 'Sign In' : 'Sign Up',
-              style: const TextStyle(
-                fontSize: 20,
-                color: Colors.black,
-                fontFamily: 'RubikR',
-              ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        decoration: BoxDecoration(
+          color:
+              (state.signType == SignType.signIn && isSignIn) ||
+                  (state.signType == SignType.signUp && !isSignIn)
+              ? Colors.white
+              : AppColors.athensGray,
+          borderRadius: BorderRadius.circular(17),
+        ),
+        child: Center(
+          child: Text(
+            isSignIn ? 'Sign In' : 'Sign Up',
+            style: const TextStyle(
+              fontSize: 20,
+              color: Colors.black,
+              fontFamily: 'RubikR',
             ),
           ),
         ),
@@ -482,43 +474,27 @@ class _MyLoginPageState extends State<MyLoginPage> {
   }
 
   Widget createOrLine() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double w;
-        if (constraints.maxWidth > 488) {
-          w = 488;
-        } else {
-          w = constraints.maxWidth;
-        }
-        final double width = (w - 69) / 2;
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 30),
-          child: IntrinsicWidth(
-            child: Row(
-              children: [
-                createOneLine(width),
-                const SizedBox(width: 50),
-                const Text(
-                  'or',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: AppColors.dustyGray,
-                    fontFamily: 'RubikB',
-                  ),
-                ),
-                const SizedBox(width: 50),
-                createOneLine(width),
-              ],
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 600),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 30),
+        child: Row(
+          children: [
+            Expanded(child: Container(height: 1, color: AppColors.dustyGray)),
+            const SizedBox(width: 50),
+            const Text(
+              'or',
+              style: TextStyle(
+                fontSize: 20,
+                color: AppColors.dustyGray,
+                fontFamily: 'RubikB',
+              ),
             ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget createOneLine(double width) {
-    return Expanded(
-      child: Container(height: 1, width: width, color: AppColors.dustyGray),
+            const SizedBox(width: 50),
+            Expanded(child: Container(height: 1, color: AppColors.dustyGray)),
+          ],
+        ),
+      ),
     );
   }
 
