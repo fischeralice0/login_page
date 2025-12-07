@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'colors_and_images.dart';
-import 'sign_bloc.dart';
+import 'core/constants/colors_and_images.dart';
+import 'features/login/bloc/sign_bloc.dart';
 
 void main() async {
   runApp(const MyApp());
