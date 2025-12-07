@@ -1,6 +1,7 @@
-import 'package:login_page/features/login/bloc/sign_bloc.dart';
+import '../../../features/login/bloc/sign_bloc.dart';
 
 class EmailValidator {
+  const EmailValidator._();
   static String mailCreateErrorText(String mail) {
     if (mail.isEmpty) return 'This field is required';
     if (mail.length > 254) return 'This text is too long';

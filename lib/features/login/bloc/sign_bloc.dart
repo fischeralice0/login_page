@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:login_page/core/validators/email_validator.dart';
+import '../../../core/validators/email_validator.dart';
+import '../../../core/validators/password_validator.dart';
+import '../../../core/validators/username_validator.dart';
 
 enum SignType { signIn, signUp }
 
@@ -161,7 +163,7 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
 
   void _onButtonPressed(ButtonPressed event, Emitter<LoginPageState> emit) {
     if (state.signType == SignType.signIn && state.requiredPassword) {
-      final String newPassError = _passCreateErrorText(
+      final String newPassError = PasswordValidator.passCreateErrorText(
         state.pass,
         state.minPasswordLen,
       );
@@ -175,11 +177,11 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
       }
     } else {
       final String newMailError = EmailValidator.mailCreateErrorText(state.mail);
-      final String newPassError = _passCreateErrorText(
+      final String newPassError = PasswordValidator.passCreateErrorText(
         state.pass,
         state.minPasswordLen,
       );
-      final String newUserError = _userCreateErrorText(
+      final String newUserError = UsernameValidator.userCreateErrorText(
         state.user,
         state.minUsernameLen,
         state.maxUsernameLen,
@@ -247,20 +249,10 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
     emit(state.copyWith(obscurePass: !state.obscurePass));
   }
 
-  String _userCreateErrorText(String user, int min, int max) {
-    if (user.isEmpty) return 'This field is required';
-    if (user.length < min) return 'The username is too short';
-    if (user.length > max) return 'The username is too long';
-    return '';
-  }
 
 
-  String _passCreateErrorText(String pass, int min) {
-    if (pass.isEmpty) return 'This field is required';
-    if (pass.length < min) return 'The password is too short';
-    // Weak password ??
-    return '';
-  }
+
+
 
   Future<void> checkMailAddress(String mail) async {
     //there will be a request to the server
