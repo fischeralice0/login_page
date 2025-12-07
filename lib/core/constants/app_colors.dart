@@ -20,11 +20,3 @@ class AppColors {
     0xff1a79f1,
   ); // background color of the “facebook” button
 }
-
-class AppImages {
-  static const String logo = 'images/logo.png';
-
-  static const String apple = 'images/apple.png';
-  static const String facebook = 'images/facebook.png';
-  static const String google = 'images/google.png';
-}
