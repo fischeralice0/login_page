@@ -310,7 +310,7 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
   Future<void> checkMailAddress(String mail) async {
     //there will be a request to the server
     await Future<void>.delayed(const Duration(seconds: 2));
-    const bool result = false; //This is a constant for testing
+    const bool result = true; //This is a constant for testing
     if (!result) {
       add(MailValidationFailed('This email is not registered'));
     } else {
