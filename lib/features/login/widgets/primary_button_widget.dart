@@ -17,15 +17,14 @@ class PrimaryButtonOrLoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return state.isLoading ? const LoadingIndicator() : PrimaryButton(signBloc: signBloc);
+    return state.isLoading
+        ? const LoadingIndicator()
+        : PrimaryButton(signBloc: signBloc);
   }
 }
 
 class PrimaryButton extends StatelessWidget {
-  const PrimaryButton({
-    super.key,
-    required this.signBloc,
-  });
+  const PrimaryButton({super.key, required this.signBloc});
   final SignBloc signBloc;
 
   @override

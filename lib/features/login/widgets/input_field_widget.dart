@@ -71,7 +71,7 @@ class InputFieldWidget extends StatelessWidget {
                           TextFormField(
                             controller: controller,
                             obscureText:
-                            obscureText && signBloc.state.obscurePass,
+                                obscureText && signBloc.state.obscurePass,
                             decoration: const InputDecoration(
                               border: InputBorder.none,
                               enabledBorder: InputBorder.none,
@@ -97,28 +97,28 @@ class InputFieldWidget extends StatelessWidget {
                     if (checkType != CheckType.none)
                       checkType == CheckType.check
                           ? const Icon(
-                        Icons.check_circle_rounded,
-                        color: AppColors.seaGreen,
-                      )
+                              Icons.check_circle_rounded,
+                              color: AppColors.seaGreen,
+                            )
                           : const Icon(Icons.cancel, color: AppColors.red),
                     if (obscureText)
                       signBloc.state.obscurePass
                           ? IconButton(
-                        onPressed: () {
-                          signBloc.add(ObscurePass());
-                        },
-                        icon: const Icon(Icons.visibility_off_outlined),
-                        color: AppColors.doveGray,
-                        iconSize: 26,
-                      )
+                              onPressed: () {
+                                signBloc.add(ObscurePass());
+                              },
+                              icon: const Icon(Icons.visibility_off_outlined),
+                              color: AppColors.doveGray,
+                              iconSize: 26,
+                            )
                           : IconButton(
-                        onPressed: () {
-                          signBloc.add(ObscurePass());
-                        },
-                        icon: const Icon(Icons.remove_red_eye_outlined),
-                        color: AppColors.doveGray,
-                        iconSize: 26,
-                      ),
+                              onPressed: () {
+                                signBloc.add(ObscurePass());
+                              },
+                              icon: const Icon(Icons.remove_red_eye_outlined),
+                              color: AppColors.doveGray,
+                              iconSize: 26,
+                            ),
                     const SizedBox(width: 20),
                   ],
                 ),
@@ -145,6 +145,7 @@ class InputFieldWidget extends StatelessWidget {
       },
     );
   }
+
   void onTextChanged(LabelType labelType, String text) {
     if (labelType == LabelType.mail) {
       signBloc.add(MailChanged(text));

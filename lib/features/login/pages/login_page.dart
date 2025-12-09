@@ -68,36 +68,39 @@ class _MyLoginPageState extends State<MyLoginPage> {
                 const LogoWidget(),
                 Expanded(
                   child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: state.success == false
-                          ? [
-                              const WelcomeTextWidget(),
-                              const SizedBox(height: 20),
-                              SignTypeToggle(
-                                state: state,
-                                signBloc: _signBloc,
-                                context: context,
-                              ),
-                              const SizedBox(height: 20),
-                              InputFields(
-                                state: state,
-                                signBloc: _signBloc,
-                                mailController: _mailController,
-                                userController: _userController,
-                                passController: _passController,
-                              ),
-                              PrimaryButtonOrLoadingIndicator(
-                                signBloc: _signBloc,
-                                state: state,
-                              ),
-                              const SizedBox(height: 20),
-                              const DividerWithText(),
-                              const SizedBox(height: 20),
-                              const SocialAuthButtons(),
-                            ]
-                          : [const SuccessWidget()],
-                    ),
+                    child: state.success == false
+                        ? SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const WelcomeTextWidget(),
+                                const SizedBox(height: 20),
+                                SignTypeToggle(
+                                  state: state,
+                                  signBloc: _signBloc,
+                                  context: context,
+                                ),
+                                const SizedBox(height: 20),
+                                InputFields(
+                                  state: state,
+                                  signBloc: _signBloc,
+                                  mailController: _mailController,
+                                  userController: _userController,
+                                  passController: _passController,
+                                ),
+                                PrimaryButtonOrLoadingIndicator(
+                                  signBloc: _signBloc,
+                                  state: state,
+                                ),
+                                const SizedBox(height: 20),
+                                const DividerWithText(),
+                                const SizedBox(height: 20),
+                                const SocialAuthButtons(),
+                                const SizedBox(height: 20),
+                              ],
+                            ),
+                          )
+                        : const SuccessWidget(),
                   ),
                 ),
               ],

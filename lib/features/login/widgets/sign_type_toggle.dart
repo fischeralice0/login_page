@@ -37,9 +37,21 @@ class SignTypeToggle extends StatelessWidget {
               width: maxWidth,
               child: Row(
                 children: [
-                  Expanded(child: PartOfSignButton(state: state, isSignIn:  true, signBloc: signBloc)),
+                  Expanded(
+                    child: PartOfSignButton(
+                      state: state,
+                      isSignIn: true,
+                      signBloc: signBloc,
+                    ),
+                  ),
                   const SizedBox(width: 3),
-                  Expanded(child: PartOfSignButton(state: state, isSignIn:  false, signBloc: signBloc)),
+                  Expanded(
+                    child: PartOfSignButton(
+                      state: state,
+                      isSignIn: false,
+                      signBloc: signBloc,
+                    ),
+                  ),
                 ],
               ),
             );
@@ -78,8 +90,8 @@ class PartOfSignButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
           color:
-          (state.signType == SignType.signIn && isSignIn) ||
-              (state.signType == SignType.signUp && !isSignIn)
+              (state.signType == SignType.signIn && isSignIn) ||
+                  (state.signType == SignType.signUp && !isSignIn)
               ? Colors.white
               : AppColors.athensGray,
           borderRadius: BorderRadius.circular(17),

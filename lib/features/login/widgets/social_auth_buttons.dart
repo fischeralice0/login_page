@@ -70,14 +70,8 @@ class AuthButton extends StatelessWidget {
   }
 }
 
-void appleClick() {
-  print('Apple click');
-}
+void appleClick() {}
 
-void googleClick() {
-  print('Google click');
-}
+void googleClick() {}
 
-void facebookClick() {
-  print('Facebook click');
-}
+void facebookClick() {}

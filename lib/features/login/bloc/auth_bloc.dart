@@ -89,7 +89,7 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
         authDataSource.mockSignUp(state.user, state.mail, state.pass).then((
           errText,
         ) {
-          if (errText.isNotEmpty) {
+          if (errText[0].isNotEmpty || errText[1].isNotEmpty || errText[2].isNotEmpty) {
             add(
               DataValidationFailed(
                 mailError: errText[0],
