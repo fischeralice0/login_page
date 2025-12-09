@@ -1,4 +1,4 @@
-import '../../../features/login/bloc/sign_bloc.dart';
+import '../../../features/login/bloc/types.dart';
 
 class EmailValidator {
   const EmailValidator._();
@@ -50,4 +50,3 @@ class EmailValidator {
     }
   }
 }
-
