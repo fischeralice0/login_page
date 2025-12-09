@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/validators/email_validator.dart';
 import '../../../core/validators/password_validator.dart';
 import '../../../core/validators/username_validator.dart';
+import '../../../data/datasources/auth_remote_datasource.dart';
 
 enum SignType { signIn, signUp }
 
@@ -136,6 +137,7 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
     on<PasswordValidationFailed>(_onPasswordValidationFailed);
     on<PasswordValidationSucceeded>(_onPasswordValidationSucceeded);
   }
+  final authDataSource = const AuthRemoteDataSource();
   void _onSignTypeChanged(SignTypeChanged event, Emitter<LoginPageState> emit) {
     final String newButtonText;
     final List<LabelType> newLabelTypes;
@@ -173,10 +175,18 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
         );
       } else {
         emit(state.copyWith(isLoading: true));
-        checkPassword(state.mail, state.pass);
+        authDataSource.mockSignIn(state.mail, state.pass).then((errText) {
+          if (errText.isNotEmpty) {
+            add(PasswordValidationFailed(errText));
+          } else {
+            add(PasswordValidationSucceeded());
+          }
+        });
       }
     } else {
-      final String newMailError = EmailValidator.mailCreateErrorText(state.mail);
+      final String newMailError = EmailValidator.mailCreateErrorText(
+        state.mail,
+      );
       final String newPassError = PasswordValidator.passCreateErrorText(
         state.pass,
         state.minPasswordLen,
@@ -191,10 +201,28 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
           newPassError == '' &&
           newUserError == '') {
         emit(state.copyWith(isLoading: true));
-        checkData(state.user, state.mail, state.pass);
+        authDataSource.mockSignUp(state.user, state.mail, state.pass).then((errText) {
+          if (errText.isNotEmpty) {
+            add(
+              DataValidationFailed(
+                mailError: errText[0],
+                passError: errText[1],
+                userError: errText[2],
+              ),
+            );
+          } else {
+            add(DataValidationSucceeded());
+          }
+        });
       } else if (state.signType == SignType.signIn && newMailError == '') {
         emit(state.copyWith(isLoading: true, pass: ''));
-        checkMailAddress(state.mail);
+        authDataSource.mockCheckEmail(state.mail).then((errText) {
+          if (errText.isNotEmpty) {
+            add(MailValidationFailed(errText));
+          } else {
+            add(PasswordRequired());
+          }
+        });
       } else {
         emit(
           state.copyWith(
@@ -247,50 +275,6 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
 
   void _onObscurePass(ObscurePass event, Emitter<LoginPageState> emit) {
     emit(state.copyWith(obscurePass: !state.obscurePass));
-  }
-
-
-
-
-
-
-  Future<void> checkMailAddress(String mail) async {
-    //there will be a request to the server
-    await Future<void>.delayed(const Duration(seconds: 2));
-    const bool result = true; //This is a constant for testing
-    if (!result) {
-      add(MailValidationFailed('This email is not registered'));
-    } else {
-      add(PasswordRequired());
-    }
-  }
-
-  Future<void> checkPassword(String mail, String pass) async {
-    //there will be a request to the server
-    await Future<void>.delayed(const Duration(seconds: 2));
-    const bool result = false; //This is a constant for testing
-    if (!result) {
-      add(PasswordValidationFailed('Incorrect password'));
-    } else {
-      add(PasswordValidationSucceeded());
-    }
-  }
-
-  Future<void> checkData(String user, String mail, String pass) async {
-    //there will be a request to the server
-    await Future<void>.delayed(const Duration(seconds: 2));
-    const bool result = false; //This is a constant for testing
-    if (!result) {
-      add(
-        DataValidationFailed(
-          mailError: 'This email already used',
-          passError: 'Weak password',
-          userError: 'This username already used',
-        ),
-      );
-    } else {
-      add(DataValidationSucceeded());
-    }
   }
 
   void _onMailValidationFailed(
