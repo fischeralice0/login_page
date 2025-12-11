@@ -135,7 +135,6 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
         showMailError: false,
       ),
     );
-    print('mail: ${event.text}');
   }
 
   void _onPassChanged(PassChanged event, Emitter<LoginPageState> emit) {
@@ -146,7 +145,6 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
         showPassError: false,
       ),
     );
-    print('pass: ${event.text}');
   }
 
   void _onUserChanged(UserChanged event, Emitter<LoginPageState> emit) {
@@ -157,7 +155,6 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
         showUserError: false,
       ),
     );
-    print('user: ${event.text}');
   }
 
   void _onObscurePass(ObscurePass event, Emitter<LoginPageState> emit) {
