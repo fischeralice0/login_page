@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../data/datasources/auth_remote_datasource.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
 import '../widgets/divider_with_text.dart';
@@ -27,7 +28,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
   @override
   void initState() {
     super.initState();
-    _signBloc = SignBloc();
+    _signBloc = SignBloc(authDataSource: const AuthRemoteDataSourceError());
+    //_signBloc = SignBloc(authDataSource: const AuthRemoteDataSourceOk());
     _userController = TextEditingController();
     _mailController = TextEditingController();
     _passController = TextEditingController();

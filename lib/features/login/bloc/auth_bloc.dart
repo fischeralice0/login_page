@@ -8,7 +8,9 @@ import 'auth_state.dart';
 import 'types.dart';
 
 class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
-  SignBloc() : super(LoginPageState()) {
+  SignBloc({required AuthRemoteDataSource authDataSource})
+    : _authDataSource = authDataSource,
+      super(LoginPageState()) {
     on<SignTypeChanged>(_onSignTypeChanged);
     on<ButtonPressed>(_onButtonPressed);
     on<MailChanged>(_onMailChanged);
@@ -22,7 +24,7 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
     on<PasswordValidationFailed>(_onPasswordValidationFailed);
     on<PasswordValidationSucceeded>(_onPasswordValidationSucceeded);
   }
-  final authDataSource = const AuthRemoteDataSource();
+  final AuthRemoteDataSource _authDataSource;
   void _onSignTypeChanged(SignTypeChanged event, Emitter<LoginPageState> emit) {
     final String newButtonText;
     final List<LabelType> newLabelTypes;
@@ -60,7 +62,7 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
         );
       } else {
         emit(state.copyWith(isLoading: true));
-        authDataSource.mockSignIn(state.mail, state.pass).then((errText) {
+        _authDataSource.mockSignIn(state.mail, state.pass).then((errText) {
           if (errText.isNotEmpty) {
             add(PasswordValidationFailed(errText));
           } else {
@@ -86,10 +88,12 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
           newPassError == '' &&
           newUserError == '') {
         emit(state.copyWith(isLoading: true));
-        authDataSource.mockSignUp(state.user, state.mail, state.pass).then((
+        _authDataSource.mockSignUp(state.user, state.mail, state.pass).then((
           errText,
         ) {
-          if (errText[0].isNotEmpty || errText[1].isNotEmpty || errText[2].isNotEmpty) {
+          if (errText[0].isNotEmpty ||
+              errText[1].isNotEmpty ||
+              errText[2].isNotEmpty) {
             add(
               DataValidationFailed(
                 mailError: errText[0],
@@ -103,7 +107,7 @@ class SignBloc extends Bloc<LoginPageEvent, LoginPageState> {
         });
       } else if (state.signType == SignType.signIn && newMailError == '') {
         emit(state.copyWith(isLoading: true, pass: ''));
-        authDataSource.mockCheckEmail(state.mail).then((errText) {
+        _authDataSource.mockCheckEmail(state.mail).then((errText) {
           if (errText.isNotEmpty) {
             add(MailValidationFailed(errText));
           } else {
